@@ -7,7 +7,7 @@ const Plan = require('../models/Plan');
 exports.getStats = async (req, res) => {
   try {
     // Get the total count of documents in each collection
-    const memberCount = await Member.countDocuments();
+    const memberCount = await Member.countDocuments({ role: 'user' });
     const trainerCount = await Trainer.countDocuments();
     const planCount = await Plan.countDocuments();
 

@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 // Layouts
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import UsersPage from './pages/UsersPage';
 
 // Pages
 import LandingPage from './pages/LandingPage';
@@ -47,6 +48,7 @@ const AppContent = () => {
             {/* Admin Routes */}
             <Route path="/dashboard" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
             <Route path="/members" element={<AdminRoute><MembersPage /></AdminRoute>} />
+            <Route path="/users" element={<AdminRoute><UsersPage /></AdminRoute>} /> 
             <Route path="/trainers" element={<AdminRoute><TrainersPage /></AdminRoute>} />
             <Route path="/plans" element={<AdminRoute><PlansPage /></AdminRoute>} />
 

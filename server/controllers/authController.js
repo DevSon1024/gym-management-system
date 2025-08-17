@@ -1,35 +1,32 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const Member = require('../models/Member');
+const User = require('../models/User'); // Changed from Member to User
 
-// @desc   Register a new member/user
+// @desc   Register a new user
 // @route  POST /api/auth/register
 exports.register = async (req, res) => {
   const { name, email, password, age, contact } = req.body;
 
   try {
     if (!name || !email || !password || !age || !contact) {
-      return res.status(400).json({ msg: 'Please enter all required fields.' });
+      return res.status(400).json({ msg: 'Please enter all fields.' });
     }
 
-    let user = await Member.findOne({ email });
+    let user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ msg: 'User already exists.' });
+      return res.status(400).json({ msg: 'User with this email already exists.' });
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    user = new Member({
+    // Create a new User, not a Member
+    user = new User({
       name,
       email,
       password: hashedPassword,
       age,
       contact,
-      // Default membership details for a new user
-      membershipType: 'Basic',
-      startDate: new Date(),
-      endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)), // Default 1 month membership
     });
 
     await user.save();
@@ -47,7 +44,7 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await Member.findOne({ email });
+    const user = await User.findOne({ email }); // Find in User collection
     if (!user) {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
@@ -70,15 +67,7 @@ exports.login = async (req, res) => {
       { expiresIn: '8h' },
       (err, token) => {
         if (err) throw err;
-        res.json({
-          token,
-          user: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          },
-        });
+        res.json({ token, user: { name: user.name, role: user.role } });
       }
     );
   } catch (err) {

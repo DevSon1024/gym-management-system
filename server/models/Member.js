@@ -1,44 +1,24 @@
 const mongoose = require('mongoose');
 
 const MemberSchema = new mongoose.Schema({
-  name: {
-    type: String,
+  // Link to the User model
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
+    unique: true, // A user can only be a member once
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-    default: 'user',
-  },
-  age: {
-    type: Number,
-    required: true,
-  },
-  contact: {
-    type: String,
-    required: true,
-  },
-  // These fields are now optional and will be null for admins
   membershipType: {
     type: String,
-    default: null,
+    required: true,
   },
   startDate: {
     type: Date,
-    default: null,
+    required: true,
   },
   endDate: {
     type: Date,
-    default: null,
+    required: true,
   },
 }, { timestamps: true });
 

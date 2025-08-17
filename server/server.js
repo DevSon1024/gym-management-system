@@ -27,6 +27,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const memberRoutes = require('./routes/memberRoutes');
 const trainerRoutes = require('./routes/trainerRoutes');
 const planRoutes = require('./routes/planRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // --- Basic API Route for Testing ---
 // This is a simple route to check if the server is running correctly.
@@ -40,6 +41,7 @@ app.use('/api/members', memberRoutes);
 app.use('/api/trainers', trainerRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 // --- Define the Port ---
 // Use the port from the .env file, or default to 5000

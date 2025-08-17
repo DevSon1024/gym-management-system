@@ -1,27 +1,35 @@
-// Import the Member model
 const Member = require('../models/Member');
+const User = require('../models/User');
 
-// --- Controller Functions ---
-
-// @desc   Get all members
-// @route  GET /api/members
+// @desc   Get all members with their user details
 exports.getAllMembers = async (req, res) => {
   try {
-    const members = await Member.find(); // Fetches all documents from the Member collection
+    // Populate the 'user' field to get details from the User collection
+    const members = await Member.find().populate('user', 'name email contact age');
     res.status(200).json(members);
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
 
-// @desc   Create a new member
-// @route  POST /api/members
+// @desc   Create a new member from an existing user
 exports.createMember = async (req, res) => {
+  const { userId, membershipType, startDate, endDate } = req.body;
   try {
-    // Create a new member instance using data from the request body
-    const newMember = new Member(req.body);
-    const savedMember = await newMember.save(); // Save the new member to the database
-    res.status(201).json(savedMember); // Return the newly created member
+    // Check if the user is already a member
+    const existingMember = await Member.findOne({ user: userId });
+    if (existingMember) {
+      return res.status(400).json({ message: 'This user is already a member.' });
+    }
+
+    const newMember = new Member({
+      user: userId,
+      membershipType,
+      startDate,
+      endDate,
+    });
+    const savedMember = await newMember.save();
+    res.status(201).json(savedMember);
   } catch (error) {
     res.status(400).json({ message: 'Error creating member', error: error.message });
   }

@@ -20,7 +20,10 @@ export const register = (userData) => api.post('/auth/register', userData);
 export const login = (credentials) => api.post('/auth/login', credentials);
 
 // --- User-Specific Functions ---
-export const getMyProfile = () => api.get('/members/me'); // We need to create this route on the backend
+export const getMyProfile = () => api.get('/members/me');
+
+// --- Admin Functions for Users ---
+export const getUsers = () => api.get('/users')
 
 // --- Public Functions ---
 export const getAllPlans = () => api.get('/plans');
