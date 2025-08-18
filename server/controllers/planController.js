@@ -12,6 +12,24 @@ exports.getAllPlans = async (req, res) => {
   }
 };
 
+/**
+ * @desc   Get a single plan by its ID
+ * @route  GET /api/plans/:id
+ * @access Public
+ */
+exports.getPlanById = async (req, res) => {
+  try {
+    const plan = await Plan.findById(req.params.id);
+    if (!plan) {
+      return res.status(404).json({ message: 'Plan not found' });
+    }
+    res.status(200).json(plan);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+
 // @desc   Create a new plan
 // @route  POST /api/plans
 // @access Private (Admin)

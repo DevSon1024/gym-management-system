@@ -52,6 +52,7 @@ export const rejectRequest = (id) => api.put(`/requests/${id}`, { status: 'rejec
 
 // --- API Functions for Plans ---
 export const getPlans = () => api.get('/plans');
+export const getPlanById = (id) => api.get(`/plans/${id}`);
 export const createPlan = (planData) => api.post('/plans', planData);
 export const updatePlan = (id, planData) => api.put(`/plans/${id}`, planData);
 export const deletePlan = (id) => api.delete(`/plans/${id}`);

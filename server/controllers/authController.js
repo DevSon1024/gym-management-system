@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Changed from Member to User
+const User = require('../models/User');
 
 // @desc   Register a new user
 // @route  POST /api/auth/register
@@ -20,7 +20,6 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create a new User, not a Member
     user = new User({
       name,
       email,
@@ -44,7 +43,7 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email }); // Find in User collection
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
@@ -54,10 +53,12 @@ exports.login = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
+    // *** FIX IS HERE: Added user's name to the payload ***
     const payload = {
       user: {
         id: user.id,
         role: user.role,
+        name: user.name, // Add user's name to the token payload
       },
     };
 

@@ -15,6 +15,7 @@ import UserDashboardPage from './pages/UserDashboardPage';
 import MembersPage from './pages/MembersPage';
 import TrainersPage from './pages/TrainersPage';
 import PlansPage from './pages/PlansPage';
+import PlanDetailsPage from './pages/PlanDetailsPage';
 import UsersPage from './pages/UsersPage';
 import RequestsPage from './pages/RequestsPage';
 import PaymentPage from './pages/PaymentPage';
@@ -44,6 +45,7 @@ const AppContent = () => {
             <Route path="/" element={!isAuthenticated ? <LandingPage /> : (isAdmin ? <Navigate to="/dashboard"/> : <Navigate to="/user-dashboard"/>)} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/plans/:id" element={<PlanDetailsPage />} />
             
             {/* User Routes */}
             <Route path="/user-dashboard" element={<UserRoute><UserDashboardPage /></UserRoute>} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getAllPlans, getAllTrainers, createRequest } from '../api/gymApi';
 import PlanCard from '../components/landing/PlanCard';
 import TrainerCard from '../components/landing/TrainerCard';
@@ -11,6 +11,7 @@ const LandingPage = () => {
   const [trainers, setTrainers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,20 +26,11 @@ const LandingPage = () => {
     };
     fetchData();
   }, []);
+  
 
-  const handleDetailsClick = async (planId) => {
-    if (!isAuthenticated) {
-      setShowModal(true);
-      return;
-    }
-    try {
-      if (window.confirm('You are about to send a membership request for this plan. Proceed?')) {
-        await createRequest(planId);
-        alert('Your request has been sent successfully! The admin will review it shortly.');
-      }
-    } catch (error) {
-      alert(error.response?.data?.msg || 'Failed to send request.');
-    }
+  const handleDetailsClick = (planId) => {
+    // Navigate to the new plan details page
+    navigate(`/plans/${planId}`);
   };
 
   return (
@@ -80,7 +72,7 @@ const LandingPage = () => {
           <h2 className="text-4xl font-bold text-center mb-8">Meet Our Expert Trainers</h2>
           <div className="flex overflow-x-auto space-x-8 pb-4">
             {trainers.map(trainer => (
-              <TrainerCard key={trainer._id} trainer={trainer} onDetailsClick={() => !isAuthenticated && setShowModal(true)} />
+              <TrainerCard key={trainer._id} trainer={trainer} />
             ))}
           </div>
         </div>
