@@ -12,12 +12,20 @@ exports.getAllTrainers = async (req, res) => {
 
 // Create a new trainer
 exports.createTrainer = async (req, res) => {
+  const { name, expertise, contact, bio } = req.body;
   try {
-    const newTrainer = new Trainer(req.body);
+    const newTrainer = new Trainer({
+      name,
+      expertise,
+      contact,
+      bio,
+      // If a file was uploaded, save its path. Otherwise, use the default.
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : undefined,
+    });
     const savedTrainer = await newTrainer.save();
     res.status(201).json(savedTrainer);
   } catch (error) {
-    res.status(400).json({ message: 'Error creating trainer' });
+    res.status(400).json({ message: 'Error creating trainer', error: error.message });
   }
 };
 

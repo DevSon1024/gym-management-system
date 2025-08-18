@@ -12,12 +12,20 @@ exports.getAllPlans = async (req, res) => {
 
 // Create a new plan
 exports.createPlan = async (req, res) => {
+  const { planName, duration, price, description } = req.body;
   try {
-    const newPlan = new Plan(req.body);
+    const newPlan = new Plan({
+      planName,
+      duration,
+      price,
+      description,
+      // If a file was uploaded, save its path.
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : undefined,
+    });
     const savedPlan = await newPlan.save();
     res.status(201).json(savedPlan);
   } catch (error) {
-    res.status(400).json({ message: 'Error creating plan' });
+    res.status(400).json({ message: 'Error creating plan', error: error.message });
   }
 };
 

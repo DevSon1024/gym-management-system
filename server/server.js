@@ -4,6 +4,14 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes')
+const fs = require('fs'); // <-- Add the File System module
+const path = require('path');
+
+// --- Create uploads folder if it doesn't exist ---
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
 
 // Load environment variables from .env file
 dotenv.config();
@@ -41,6 +49,7 @@ app.use('/api/members', memberRoutes);
 app.use('/api/trainers', trainerRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/users', userRoutes);
 
 // --- Define the Port ---

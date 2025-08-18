@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const { auth, admin } = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
 const {
   getAllTrainers,
   createTrainer,
@@ -7,12 +9,14 @@ const {
   deleteTrainer
 } = require('../controllers/trainerController');
 
-router.route('/')
-  .get(getAllTrainers)
-  .post(createTrainer);
+// PUBLIC ROUTE: Anyone can view trainers
+router.route('/').get(getAllTrainers);
+
+// ADMIN-ONLY ROUTES
+router.route('/').post([auth, admin, upload.single('image')], createTrainer);
 
 router.route('/:id')
-  .put(updateTrainer)
-  .delete(deleteTrainer);
+  .put([auth, admin, upload.single('image')], updateTrainer)
+  .delete([auth, admin], deleteTrainer);
 
 module.exports = router;
