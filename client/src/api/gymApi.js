@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// Interceptor to add the token to every request
+// Interceptor to add the token to every request (will remain for other calls)
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -23,7 +23,7 @@ export const login = (credentials) => api.post('/auth/login', credentials);
 export const getMyProfile = () => api.get('/members/me');
 
 // --- Admin Functions for Users ---
-export const getUsers = () => api.get('/users')
+export const getUsers = () => api.get('/users');
 
 // --- Public Functions ---
 export const getAllPlans = () => api.get('/plans');
@@ -31,7 +31,22 @@ export const getAllTrainers = () => api.get('/trainers');
 
 // --- API Functions for Members ---
 export const getMembers = () => api.get('/members');
-export const createMember = (memberData) => api.post('/members', memberData);
+
+// ** MODIFIED FUNCTION TO MANUALLY ADD TOKEN **
+// This ensures the token is always sent during membership creation.
+export const createMember = (memberData) => {
+  const token = localStorage.getItem('token');
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  };
+  if (token) {
+    config.headers['x-auth-token'] = token;
+  }
+  return api.post('/members', memberData, config);
+};
+
 export const updateMember = (id, memberData) => api.put(`/members/${id}`, memberData);
 export const deleteMember = (id) => api.delete(`/members/${id}`);
 
