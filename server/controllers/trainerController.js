@@ -32,7 +32,11 @@ exports.createTrainer = async (req, res) => {
 // Update a trainer by ID
 exports.updateTrainer = async (req, res) => {
   try {
-    const updatedTrainer = await Trainer.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updateData = { ...req.body };
+    if (req.file) {
+      updateData.imageUrl = `/uploads/${req.file.filename}`;
+    }
+    const updatedTrainer = await Trainer.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!updatedTrainer) return res.status(404).json({ message: 'Trainer not found' });
     res.status(200).json(updatedTrainer);
   } catch (error) {

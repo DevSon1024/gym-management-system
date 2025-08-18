@@ -10,13 +10,11 @@ const {
 } = require('../controllers/planController');
 
 // PUBLIC ROUTE: Anyone can view plans
-router.route('/').get(getAllPlans);
+router.get('/', getAllPlans);
 
 // ADMIN-ONLY ROUTES
-router.route('/').post([auth, admin, upload.single('image')], createPlan);
-
-router.route('/:id')
-  .put([auth, admin, upload.single('image')], updatePlan)
-  .delete([auth, admin], deletePlan);
+router.post('/', [auth, admin, upload.single('image')], createPlan);
+router.put('/:id', [auth, admin, upload.single('image')], updatePlan);
+router.delete('/:id', [auth, admin], deletePlan);
 
 module.exports = router;

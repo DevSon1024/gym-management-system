@@ -4,8 +4,10 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes')
-const fs = require('fs'); // <-- Add the File System module
+const fs = require('fs');
 const path = require('path');
+const requestRoutes = require('./routes/requestRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 // --- Create uploads folder if it doesn't exist ---
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -19,6 +21,9 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
+// --- Serve the uploads folder statically ---
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // --- Connect to MongoDB ---
 // This function is imported from your config/db.js file
 connectDB();
@@ -28,6 +33,9 @@ connectDB();
 app.use(cors()); 
 // Enable the Express app to parse JSON formatted request bodies
 app.use(express.json());
+
+// --- Serve the uploads folder statically ---
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- API Routes ---
 // const authRoutes = require('./routes/authRoutes');
@@ -51,6 +59,8 @@ app.use('/api/plans', planRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/requests', requestRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // --- Define the Port ---
 // Use the port from the .env file, or default to 5000

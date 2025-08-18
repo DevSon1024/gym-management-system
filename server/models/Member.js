@@ -1,25 +1,20 @@
 const mongoose = require('mongoose');
 
 const MemberSchema = new mongoose.Schema({
-  // Link to the User model
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    unique: true, // A user can only be a member once
+    unique: true,
   },
-  membershipType: {
-    type: String,
-    required: true,
-  },
-  startDate: {
-    type: Date,
-    required: true,
-  },
-  endDate: {
-    type: Date,
-    required: true,
-  },
+  membershipType: { type: String, required: true },
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
+  height: { type: Number, required: true },
+  weight: { type: Number, required: true },
+  healthConditions: { type: String, default: 'None' },
+  emergencyContactName: { type: String, required: true },
+  emergencyContactPhone: { type: String, required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Member', MemberSchema);

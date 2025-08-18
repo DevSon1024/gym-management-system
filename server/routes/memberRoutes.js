@@ -7,10 +7,17 @@ const {
   getMemberById,
   updateMember,
   deleteMember,
+  getMemberProfile
 } = require('../controllers/memberController');
 
-// Protect all routes with auth and admin middleware
-router.route('/').get([auth, admin], getAllMembers).post([auth, admin], createMember);
-router.route('/:id').get([auth, admin], getMemberById).put([auth, admin], updateMember).delete([auth, admin], deleteMember);
+// USER ROUTES
+router.get('/me', auth, getMemberProfile);
+router.post('/', auth, createMember);
+
+// ADMIN ROUTES
+router.get('/', [auth, admin], getAllMembers);
+router.get('/:id', [auth, admin], getMemberById);
+router.put('/:id', [auth, admin], updateMember);
+router.delete('/:id', [auth, admin], deleteMember);
 
 module.exports = router;
