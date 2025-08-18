@@ -19,7 +19,7 @@ const ReceiptPage = () => {
   return (
     <div className="max-w-2xl mx-auto my-10 p-8 bg-white rounded-2xl shadow-lg">
       <h1 className="text-4xl font-bold text-center text-green-600 mb-4">Payment Successful!</h1>
-      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-8">Membership Receipt</h2>
+      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-8">Payment Receipt</h2>
       
       <div className="space-y-6">
         <div className="border-b pb-4">
@@ -29,7 +29,7 @@ const ReceiptPage = () => {
         </div>
 
         <div className="border-b pb-4">
-          <h3 className="text-lg font-bold mb-2">Member Details</h3>
+          <h3 className="text-lg font-bold mb-2">User Details</h3>
           <p><strong>Name:</strong> {memberDetails.name}</p>
           <p><strong>Email:</strong> {memberDetails.email}</p>
         </div>

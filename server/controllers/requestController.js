@@ -1,11 +1,12 @@
 const MembershipRequest = require('../models/MembershipRequest');
 const Member = require('../models/Member');
 const Plan = require('../models/Plan');
+const Payment = require('../models/Payment');
 
-// Create a new membership request
+// ... (createRequest and getAllRequests functions remain the same)
 exports.createRequest = async (req, res) => {
   try {
-    const { planId } = req.body;
+    const { planId, paymentId, memberDetails } = req.body;
     const userId = req.user.id;
 
     const existingRequest = await MembershipRequest.findOne({ user: userId, status: 'pending' });
@@ -13,7 +14,13 @@ exports.createRequest = async (req, res) => {
       return res.status(400).json({ msg: 'You already have a pending request.' });
     }
 
-    const newRequest = new MembershipRequest({ user: userId, plan: planId });
+    const newRequest = new MembershipRequest({
+      user: userId,
+      plan: planId,
+      payment: paymentId,
+      ...memberDetails
+    });
+
     await newRequest.save();
     res.status(201).json(newRequest);
   } catch (err) {
@@ -21,7 +28,6 @@ exports.createRequest = async (req, res) => {
   }
 };
 
-// Get all pending requests (for admin)
 exports.getAllRequests = async (req, res) => {
   try {
     const requests = await MembershipRequest.find({ status: 'pending' })
@@ -33,7 +39,8 @@ exports.getAllRequests = async (req, res) => {
   }
 };
 
-// Update a request's status (approve/reject for admin)
+
+// This function is now updated to link the payment to the new member
 exports.updateRequestStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -58,16 +65,37 @@ exports.updateRequestStatus = async (req, res) => {
         endDate.setFullYear(startDate.getFullYear() + parseInt(durationValue));
       }
 
-      await Member.create({
+      // Create the new member
+      const newMember = await Member.create({
         user: request.user,
         membershipType: plan.planName,
         startDate,
         endDate,
+        height: request.height,
+        weight: request.weight,
+        healthConditions: request.healthConditions,
+        emergencyContactName: request.emergencyContactName,
+        emergencyContactPhone: request.emergencyContactPhone,
       });
+      
+      // Update the original payment record with the new member's ID
+      await Payment.findByIdAndUpdate(request.payment, { member: newMember._id });
     }
 
     request.status = status;
     await request.save();
+    res.json(request);
+  } catch (err) {
+    res.status(500).send('Server Error');
+  }
+};
+
+exports.getMyPendingRequest = async (req, res) => {
+  try {
+    const request = await MembershipRequest.findOne({ user: req.user.id, status: 'pending' });
+    if (!request) {
+      return res.status(404).json({ msg: 'No pending request found.' });
+    }
     res.json(request);
   } catch (err) {
     res.status(500).send('Server Error');

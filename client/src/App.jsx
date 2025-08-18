@@ -19,6 +19,7 @@ import UsersPage from './pages/UsersPage';
 import RequestsPage from './pages/RequestsPage';
 import PaymentPage from './pages/PaymentPage';
 import ReceiptPage from './pages/ReceiptPage';
+import MembershipFormPage from './pages/MembershipFormPage'; 
 
 // Route Protection Components
 const UserRoute = ({ children }) => {
@@ -48,6 +49,7 @@ const AppContent = () => {
             <Route path="/user-dashboard" element={<UserRoute><UserDashboardPage /></UserRoute>} />
             <Route path="/payment" element={<UserRoute><PaymentPage /></UserRoute>} />
             <Route path="/receipt" element={<UserRoute><ReceiptPage /></UserRoute>} />
+            <Route path="/membership-form" element={<UserRoute><MembershipFormPage /></UserRoute>} />
 
             {/* Admin Routes */}
             <Route path="/dashboard" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />

@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// Interceptor to add the token to every request (will remain for other calls)
+// Interceptor to add the token to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -31,22 +31,6 @@ export const getAllTrainers = () => api.get('/trainers');
 
 // --- API Functions for Members ---
 export const getMembers = () => api.get('/members');
-
-// ** MODIFIED FUNCTION TO MANUALLY ADD TOKEN **
-// This ensures the token is always sent during membership creation.
-export const createMember = (memberData) => {
-  const token = localStorage.getItem('token');
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  };
-  if (token) {
-    config.headers['x-auth-token'] = token;
-  }
-  return api.post('/members', memberData, config);
-};
-
 export const updateMember = (id, memberData) => api.put(`/members/${id}`, memberData);
 export const deleteMember = (id) => api.delete(`/members/${id}`);
 
@@ -60,7 +44,8 @@ export const updateTrainer = (id, trainerData) => api.put(`/trainers/${id}`, tra
 export const deleteTrainer = (id) => api.delete(`/trainers/${id}`);
 
 // --- API Functions for Membership Requests ---
-export const createRequest = (planId) => api.post('/requests', { planId });
+export const createRequest = (requestData) => api.post('/requests', requestData);
+export const getMyPendingRequest = () => api.get('/requests/me');
 export const getRequests = () => api.get('/requests');
 export const approveRequest = (id) => api.put(`/requests/${id}`, { status: 'approved' });
 export const rejectRequest = (id) => api.put(`/requests/${id}`, { status: 'rejected' });
@@ -72,6 +57,7 @@ export const updatePlan = (id, planData) => api.put(`/plans/${id}`, planData);
 export const deletePlan = (id) => api.delete(`/plans/${id}`);
 
 // --- API Functions for Payments ---
+export const createPayment = (paymentData) => api.post('/payments', paymentData);
 export const getMyLatestReceipt = () => api.get('/payments/my-receipt');
 
 export default api;
