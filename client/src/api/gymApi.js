@@ -44,10 +44,19 @@ export const createTrainer = (trainerData) => api.post('/trainers', trainerData)
 export const updateTrainer = (id, trainerData) => api.put(`/trainers/${id}`, trainerData);
 export const deleteTrainer = (id) => api.delete(`/trainers/${id}`);
 
+// --- API Functions for Membership Requests ---
+export const createRequest = (planId) => api.post('/requests', { planId });
+export const getRequests = () => api.get('/requests');
+export const approveRequest = (id) => api.put(`/requests/${id}`, { status: 'approved' });
+export const rejectRequest = (id) => api.put(`/requests/${id}`, { status: 'rejected' });
+
 // --- API Functions for Plans ---
 export const getPlans = () => api.get('/plans');
 export const createPlan = (planData) => api.post('/plans', planData);
 export const updatePlan = (id, planData) => api.put(`/plans/${id}`, planData);
 export const deletePlan = (id) => api.delete(`/plans/${id}`);
+
+// --- API Functions for Payments ---
+export const getMyLatestReceipt = () => api.get('/payments/my-receipt');
 
 export default api;

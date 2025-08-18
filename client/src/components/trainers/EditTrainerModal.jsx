@@ -4,14 +4,26 @@ import Button from '../common/Button';
 
 const EditTrainerModal = ({ trainer, onClose, onSave }) => {
   const [formData, setFormData] = useState({ ...trainer });
+  const [image, setImage] = useState(null);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+    const trainerData = new FormData();
+    for (const key in formData) {
+      trainerData.append(key, formData[key]);
+    }
+    if (image) {
+      trainerData.append('image', image);
+    }
+    onSave(trainerData);
   };
 
   return (
@@ -22,6 +34,11 @@ const EditTrainerModal = ({ trainer, onClose, onSave }) => {
           <Input name="name" value={formData.name} onChange={handleInputChange} placeholder="Name" required />
           <Input name="expertise" value={formData.expertise} onChange={handleInputChange} placeholder="Expertise" required />
           <Input name="contact" value={formData.contact} onChange={handleInputChange} placeholder="Contact" required />
+          <Input name="bio" value={formData.bio} onChange={handleInputChange} placeholder="Short Bio" />
+          <div>
+            <label className="block text-sm font-medium text-gray-500 mb-1">Update Image (optional)</label>
+            <input type="file" name="image" onChange={handleFileChange} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+          </div>
           <div className="flex justify-end space-x-4 pt-4">
             <button type="button" onClick={onClose} className="px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
             <Button type="submit">Save Changes</Button>

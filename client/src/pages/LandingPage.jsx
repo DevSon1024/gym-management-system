@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getAllPlans, getAllTrainers } from '../api/gymApi';
+import { getAllPlans, getAllTrainers, createRequest } from '../api/gymApi';
 import PlanCard from '../components/landing/PlanCard';
 import TrainerCard from '../components/landing/TrainerCard';
 import InfoModal from '../components/landing/InfoModal';
+import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
   const [plans, setPlans] = useState([]);
   const [trainers, setTrainers] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    // Fetch public data for the landing page
     const fetchData = async () => {
       try {
         const plansRes = await getAllPlans();
@@ -24,6 +25,21 @@ const LandingPage = () => {
     };
     fetchData();
   }, []);
+
+  const handleDetailsClick = async (planId) => {
+    if (!isAuthenticated) {
+      setShowModal(true);
+      return;
+    }
+    try {
+      if (window.confirm('You are about to send a membership request for this plan. Proceed?')) {
+        await createRequest(planId);
+        alert('Your request has been sent successfully! The admin will review it shortly.');
+      }
+    } catch (error) {
+      alert(error.response?.data?.msg || 'Failed to send request.');
+    }
+  };
 
   return (
     <>
@@ -52,7 +68,7 @@ const LandingPage = () => {
           <h2 className="text-4xl font-bold text-center mb-8">Our Membership Plans</h2>
           <div className="flex overflow-x-auto space-x-8 pb-4">
             {plans.map(plan => (
-              <PlanCard key={plan._id} plan={plan} onDetailsClick={() => setShowModal(true)} />
+              <PlanCard key={plan._id} plan={plan} onDetailsClick={() => handleDetailsClick(plan._id)} />
             ))}
           </div>
         </div>
@@ -64,7 +80,7 @@ const LandingPage = () => {
           <h2 className="text-4xl font-bold text-center mb-8">Meet Our Expert Trainers</h2>
           <div className="flex overflow-x-auto space-x-8 pb-4">
             {trainers.map(trainer => (
-              <TrainerCard key={trainer._id} trainer={trainer} onDetailsClick={() => setShowModal(true)} />
+              <TrainerCard key={trainer._id} trainer={trainer} onDetailsClick={() => !isAuthenticated && setShowModal(true)} />
             ))}
           </div>
         </div>

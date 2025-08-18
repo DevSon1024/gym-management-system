@@ -30,6 +30,7 @@ const Navbar = () => {
                     <Link to="/users" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Users</Link>
                     <Link to="/trainers" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Trainers</Link>
                     <Link to="/plans" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Plans</Link>
+                    <Link to="/requests" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Requests</Link>
                   </>
                 ) : (
                   // --- Regular User Links ---

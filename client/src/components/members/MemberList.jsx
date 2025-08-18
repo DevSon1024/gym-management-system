@@ -18,8 +18,8 @@ const MemberList = ({ members, onEdit, onDelete }) => {
           <tbody className="divide-y divide-gray-200">
             {members.map((member) => (
               <tr key={member._id} className="hover:bg-gray-50">
-                <td className="p-4 whitespace-nowrap">{member.name}</td>
-                <td className="p-4 whitespace-nowrap">{member.contact}</td>
+                <td className="p-4 whitespace-nowrap">{member.user.name}</td>
+                <td className="p-4 whitespace-nowrap">{member.user.contact}</td>
                 <td className="p-4 whitespace-nowrap"><span className="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-800">{member.membershipType}</span></td>
                 <td className="p-4 whitespace-nowrap">{new Date(member.endDate).toLocaleDateString()}</td>
                 <td className="p-4 whitespace-nowrap flex space-x-4">
