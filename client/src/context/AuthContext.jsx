@@ -18,16 +18,15 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        // Check if token is expired
         if (decoded.exp * 1000 > Date.now()) {
           setAuth({
             token: token,
-            user: decoded.user,
+            user: decoded.user, // Correctly sets the full user object
             isAuthenticated: true,
             isAdmin: decoded.user.role === 'admin',
           });
         } else {
-          localStorage.removeItem('token'); // Clean up expired token
+          localStorage.removeItem('token');
         }
       } catch (error) {
         console.error("Invalid token:", error);
@@ -43,11 +42,11 @@ export const AuthProvider = ({ children }) => {
     const decoded = jwtDecode(data.token);
     setAuth({
       token: data.token,
-      user: decoded.user,
+      user: decoded.user, // Correctly sets the full user object
       isAuthenticated: true,
       isAdmin: decoded.user.role === 'admin',
     });
-    return decoded.user.role; // Return role for redirection
+    return decoded.user.role;
   };
 
   const register = async (userData) => {

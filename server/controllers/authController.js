@@ -53,12 +53,11 @@ exports.login = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
-    // *** FIX IS HERE: Added user's name to the payload ***
     const payload = {
       user: {
         id: user.id,
         role: user.role,
-        name: user.name, // Add user's name to the token payload
+        name: user.name, // Name is correctly added here
       },
     };
 

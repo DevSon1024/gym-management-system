@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import Input from '../common/Input';
+import Button from '../common/Button';
 
-const EditMemberModal = ({ member, onClose, onSave }) => {
-  // Initialize form state with the member's data
-  const [formData, setFormData] = useState({ ...member });
+const EditMemberModal = ({ member, plans, onClose, onSave }) => { // Accept plans as a prop
+  const [formData, setFormData] = useState({
+    membershipType: member.membershipType || '',
+    endDate: member.endDate ? new Date(member.endDate).toISOString().split('T')[0] : ''
+  });
 
   useEffect(() => {
-    // Update form data if the member prop changes
-    setFormData({ ...member });
+    setFormData({
+      membershipType: member.membershipType || '',
+      endDate: member.endDate ? new Date(member.endDate).toISOString().split('T')[0] : ''
+    });
   }, [member]);
 
   const handleInputChange = (e) => {
@@ -15,60 +21,53 @@ const EditMemberModal = ({ member, onClose, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData); // Pass the updated data to the onSave function
+    onSave({ ...member, ...formData });
   };
 
   return (
-    // Modal backdrop
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      {/* Modal content */}
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Edit Member</h2>
+        <h2 className="text-2xl font-semibold mb-2 text-gray-800">Edit Membership</h2>
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+            <p><strong>Member:</strong> {member.user.name}</p>
+            <p><strong>Contact:</strong> {member.user.contact}</p>
+        </div>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Name"
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg"
-          />
-          <input
-            type="number"
-            name="age"
-            value={formData.age}
-            onChange={handleInputChange}
-            placeholder="Age"
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg"
-          />
-          <input
-            type="text"
-            name="contact"
-            value={formData.contact}
-            onChange={handleInputChange}
-            placeholder="Contact"
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg"
-          />
-          <select
-            name="membershipType"
-            value={formData.membershipType}
-            onChange={handleInputChange}
-            className="w-full p-3 border border-gray-300 rounded-lg"
-          >
-            <option value="Basic">Basic</option>
-            <option value="Premium">Premium</option>
-            <option value="VIP">VIP</option>
-          </select>
+            <div>
+                <label className="block text-sm font-medium text-gray-700">Plan Type</label>
+                <select
+                    name="membershipType"
+                    value={formData.membershipType}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg"
+                >
+                    {/* Dynamically generate options from the plans list */}
+                    {plans.map(plan => (
+                        <option key={plan._id} value={plan.planName}>
+                            {plan.planName}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div>
+                <label className="block text-sm font-medium text-gray-700">Membership End Date</label>
+                <Input 
+                    type="date"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleInputChange}
+                    required
+                />
+            </div>
+          
           <div className="flex justify-end space-x-4 mt-6">
             <button type="button" onClick={onClose} className="px-6 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
               Cancel
             </button>
-            <button type="submit" className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+            <Button type="submit">
               Save Changes
-            </button>
+            </Button>
           </div>
         </form>
       </div>

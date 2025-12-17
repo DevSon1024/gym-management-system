@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import MembershipFormModal from '../components/members/MembershipFormModal';
 import Button from '../components/common/Button';
 
-// MemberView Component (No Changes)
+// This is the view for an active member
 const MemberView = ({ profile }) => {
   const [receipt, setReceipt] = useState(null);
   const navigate = useNavigate();
@@ -28,6 +28,14 @@ const MemberView = ({ profile }) => {
 
   return (
     <>
+      {/* --- New Membership Status Card --- */}
+      <div className="bg-green-500 text-white p-4 rounded-2xl shadow-lg mb-8 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h2 className="text-xl font-semibold">You are an Active Member</h2>
+      </div>
+
       <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg mb-8">
         <div className="flex justify-between items-start">
           <div>
@@ -74,7 +82,8 @@ const MemberView = ({ profile }) => {
   );
 };
 
-// PaidUserView Component (No Changes)
+// ... (PaidUserView and NonPaidUserView components remain unchanged) ...
+
 const PaidUserView = ({ receipt, hasPendingRequest, onApplyClick }) => {
     const navigate = useNavigate();
     const handleViewReceipt = () => navigate('/receipt', { state: { receipt } });
@@ -104,7 +113,6 @@ const PaidUserView = ({ receipt, hasPendingRequest, onApplyClick }) => {
     );
 };
 
-// NonPaidUserView Component (No Changes)
 const NonPaidUserView = ({ plans }) => {
   const navigate = useNavigate();
   const handlePlanClick = (plan) => navigate('/payment', { state: { plan } });
@@ -170,7 +178,7 @@ const UserDashboardPage = () => {
       }
     };
     fetchData();
-  }, [hasPendingRequest]); // Rerun effect when request status changes
+  }, [hasPendingRequest]);
 
   const handleApplyClick = () => {
       setIsModalOpen(true);
@@ -178,14 +186,13 @@ const UserDashboardPage = () => {
 
   const handleFormSubmit = async (memberDetails) => {
       try {
-          // *** FIX IS HERE: Add paymentId to the request ***
           await createRequest({ 
               planId: receipt.planDetails._id, 
-              paymentId: receipt.paymentDetails._id, // This was missing
+              paymentId: receipt.paymentDetails._id,
               memberDetails 
           });
           setIsModalOpen(false);
-          setHasPendingRequest(true); // This will trigger the useEffect to refetch data
+          setHasPendingRequest(true);
           alert('Membership request submitted successfully!');
       } catch (error) {
           alert(error.response?.data?.msg || 'Failed to submit request.');

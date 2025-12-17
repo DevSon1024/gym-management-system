@@ -10,7 +10,7 @@ const MemberList = ({ members, onEdit, onDelete }) => {
             <tr>
               <th className="p-4 font-semibold text-gray-600">Name</th>
               <th className="p-4 font-semibold text-gray-600">Contact</th>
-              <th className="p-4 font-semibold text-gray-600">Membership</th>
+              <th className="p-4 font-semibold text-gray-600">Plan Type</th> {/* Renamed this header */}
               <th className="p-4 font-semibold text-gray-600">End Date</th>
               <th className="p-4 font-semibold text-gray-600">Actions</th>
             </tr>

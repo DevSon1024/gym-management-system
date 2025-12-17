@@ -40,11 +40,10 @@ exports.getAllRequests = async (req, res) => {
 };
 
 
-// This function is now updated to link the payment to the new member
 exports.updateRequestStatus = async (req, res) => {
   try {
     const { status } = req.body;
-    const request = await MembershipRequest.findById(req.params.id);
+    const request = await MembershipRequest.findById(req.params.id).populate('user', 'name email'); // Populate user details
 
     if (!request) {
       return res.status(404).json({ msg: 'Request not found' });
@@ -65,9 +64,9 @@ exports.updateRequestStatus = async (req, res) => {
         endDate.setFullYear(startDate.getFullYear() + parseInt(durationValue));
       }
 
-      // Create the new member
+      // *** FIX IS HERE: Pass only the user's _id ***
       const newMember = await Member.create({
-        user: request.user,
+        user: request.user._id, // Use the user's ID, not the whole object
         membershipType: plan.planName,
         startDate,
         endDate,
@@ -78,7 +77,6 @@ exports.updateRequestStatus = async (req, res) => {
         emergencyContactPhone: request.emergencyContactPhone,
       });
       
-      // Update the original payment record with the new member's ID
       await Payment.findByIdAndUpdate(request.payment, { member: newMember._id });
     }
 
@@ -86,6 +84,7 @@ exports.updateRequestStatus = async (req, res) => {
     await request.save();
     res.json(request);
   } catch (err) {
+    console.error(err); // Log the full error for better debugging
     res.status(500).send('Server Error');
   }
 };
